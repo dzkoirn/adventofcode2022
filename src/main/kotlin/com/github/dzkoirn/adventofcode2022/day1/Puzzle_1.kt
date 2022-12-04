@@ -1,5 +1,6 @@
 package com.github.dzkoirn.adventofcode2022.day1
 
+import com.github.dzkoirn.adventofcode2022.openResourseAsStream
 import java.io.BufferedInputStream
 import java.io.BufferedReader
 import java.io.InputStreamReader
@@ -16,7 +17,7 @@ fun main(args: Array<String>) {
 }
 
 private fun getElvesCaloriesList(): List<Int> =
-    object {}.javaClass.classLoader.getResourceAsStream("day_1_input")
+    openResourseAsStream("day_1_input")
         .let { BufferedInputStream(it) }
         .use { input ->
             BufferedReader(InputStreamReader(input))
