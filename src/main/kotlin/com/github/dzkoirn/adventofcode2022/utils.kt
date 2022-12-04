@@ -12,6 +12,6 @@ fun InputStream.asReader() =
     BufferedReader(InputStreamReader(BufferedInputStream(this)))
 
 fun readInput(resourceName: String): List<String> =
-    openResourseAsStream("day_3_input").asReader().use { reader ->
+    openResourseAsStream(resourceName).asReader().use { reader ->
         reader.lines().toList()
     }
