@@ -57,5 +57,10 @@ fun parseStacks(lines: List<String>): List<List<Char>> {
 }
 
 fun parseCommands(lines: List<String>): List<Input.Command> {
-    return emptyList()
+    return lines.map { it.split(" ") }
+        .map { Input.Command(
+            count = it[1].toInt(),
+            from = it[3].toInt(),
+            to = it[5].toInt()
+        ) }
 }
