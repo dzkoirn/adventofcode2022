@@ -3,6 +3,7 @@ package com.github.dzkoirn.adventofcode2022.day10
 import com.github.dzkoirn.adventofcode2022.readInput
 import java.util.LinkedList
 import java.util.Queue
+import kotlin.math.absoluteValue
 
 fun main() {
     val input = readInput("day_10_input")
@@ -12,7 +13,9 @@ fun main() {
         .calculateSignalStrength()
     println(result)
     println("===================")
-    println("Puzzle 1")
+    println("Puzzle 2")
+    val text = getImage(input)
+    println(text)
     println("Finish")
 }
 
@@ -88,4 +91,30 @@ class EverythingCollector {
     }
 
     fun getValues(): List<Pair<Long, Int>> = values
+}
+
+class CrtCollector {
+
+    private val text = mutableListOf<Char>()
+    fun onTick(tick: Long, value: Int) {
+        val rowPosition = (tick - 1) % 40
+        val symbol = if ((rowPosition - value).absoluteValue > 1) {
+            '.'
+        } else {
+            '#'
+        }
+        text.add(symbol)
+    }
+
+    fun getText(): String =
+        text.windowed(size = 40, step = 40)
+            .map { it.joinToString(separator = "") }
+            .joinToString(separator = "\n")
+}
+
+fun getImage(input: List<String>): String {
+    return with(CrtCollector()) {
+        execute(parseInput(input), this::onTick)
+        getText()
+    }
 }

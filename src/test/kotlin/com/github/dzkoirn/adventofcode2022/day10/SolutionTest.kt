@@ -27,6 +27,20 @@ class SolutionTest {
         assertEquals(expectedSignalStrength, result)
     }
 
+    @Test
+    fun testImageDrawing() {
+        val collector = CrtCollector()
+        execute(parseInput(exampleInput.lines()), collector::onTick)
+
+        println("Expected")
+        println(expectedImage)
+
+        println("Actual")
+        println(collector.getText())
+
+        assertEquals(expectedImage, collector.getText())
+    }
+
     companion object {
         val smallInputExample = """
             noop
@@ -195,5 +209,14 @@ class SolutionTest {
         val ticksToCare = arrayOf(20L, 60L, 100L, 140L, 180L, 220L)
         val expectedValuesOnTicks = listOf(21, 19, 18, 21, 16, 18)
         const val expectedSignalStrength = 13140L
+
+        val expectedImage = """
+            ##..##..##..##..##..##..##..##..##..##..
+            ###...###...###...###...###...###...###.
+            ####....####....####....####....####....
+            #####.....#####.....#####.....#####.....
+            ######......######......######......####
+            #######.......#######.......#######.....
+        """.trimIndent()
     }
 }
