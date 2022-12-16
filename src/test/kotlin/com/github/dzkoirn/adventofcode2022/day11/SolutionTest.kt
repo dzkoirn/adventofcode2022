@@ -34,8 +34,8 @@ class SolutionTest {
         val monkeysStart = parseInput(exampleInput.lines())
         playRoundV1(monkeysStart,)
 
-        assertEquals(listOf(20, 23, 27, 26), monkeysStart[0].items)
-        assertEquals(listOf(2080, 25, 167, 207, 401, 1046), monkeysStart[1].items)
+        assertEquals(listOf(20L, 23L, 27L, 26L), monkeysStart[0].items)
+        assertEquals(listOf(2080L, 25L, 167L, 207L, 401L, 1046L), monkeysStart[1].items)
         assertTrue(monkeysStart[2].items.isEmpty())
         assertTrue(monkeysStart[3].items.isEmpty())
     }
@@ -48,8 +48,8 @@ class SolutionTest {
             playRoundV1(monkeysStart)
         }
 
-        assertEquals(listOf(10, 12, 14, 26, 34), monkeysStart[0].items)
-        assertEquals(listOf(245, 93, 53, 199, 115), monkeysStart[1].items)
+        assertEquals(listOf(10L, 12L, 14L, 26L, 34L), monkeysStart[0].items)
+        assertEquals(listOf(245L, 93L, 53L, 199L, 115L), monkeysStart[1].items)
         assertTrue(monkeysStart[2].items.isEmpty())
         assertTrue(monkeysStart[3].items.isEmpty())
     }
@@ -86,6 +86,7 @@ class SolutionTest {
     @Test
     fun test20RoundsCountExpectionsNoDivider() {
         val monkeysStart = parseInput(exampleInput.lines())
+
         val counter = Counter()
 
         repeat(20) {
@@ -187,7 +188,7 @@ class SolutionTest {
         internal val expectedParsedInput = listOf(
             Monkey(
                 id = 0,
-                items = listOf(79, 98).toLinkedList(),
+                items = listOf(79L, 98L).toLinkedList(),
                 operation = Operation(
                     leftOperand = Operation.Companion.Operand.OldOperand,
                     arithmeticOperation = Operation.Companion.ArithmeticOperation.MUL,
@@ -198,7 +199,7 @@ class SolutionTest {
             ),
             Monkey(
                 id = 1,
-                items = listOf(54, 65, 75, 74).toLinkedList(),
+                items = listOf(54L, 65L, 75L, 74L).toLinkedList(),
                 operation = Operation(
                     leftOperand = Operation.Companion.Operand.OldOperand,
                     arithmeticOperation = Operation.Companion.ArithmeticOperation.PLUS,
@@ -209,7 +210,7 @@ class SolutionTest {
             ),
             Monkey(
                 id = 2,
-                items = listOf(79, 60, 97).toLinkedList(),
+                items = listOf(79L, 60L, 97L).toLinkedList(),
                 operation = Operation(
                     leftOperand = Operation.Companion.Operand.OldOperand,
                     arithmeticOperation = Operation.Companion.ArithmeticOperation.MUL,
@@ -220,7 +221,7 @@ class SolutionTest {
             ),
             Monkey(
                 id = 3,
-                items = listOf(74).toLinkedList(),
+                items = listOf(74L).toLinkedList(),
                 operation = Operation(
                     leftOperand = Operation.Companion.Operand.OldOperand,
                     arithmeticOperation = Operation.Companion.ArithmeticOperation.PLUS,

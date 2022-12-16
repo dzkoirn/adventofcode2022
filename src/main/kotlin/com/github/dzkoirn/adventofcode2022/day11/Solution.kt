@@ -15,7 +15,7 @@ fun main() {
 }
 data class Monkey(
     val id: Int,
-    val items: LinkedList<Int>,
+    val items: LinkedList<Long>,
     val operation: Operation,
     val test: Int,
     val nextMonkeyIds: NextMonkeyIds,
@@ -46,7 +46,7 @@ internal fun stupidMonkeyDestruction(m: List<String>): Monkey {
             idString.substring("Monkey ".length, idString.indexOf(':')).toInt()
         },
         items = m[1].let { itemsString -> itemsString.split(':').last().split(",")
-            .map { it.trim().toInt() }}.let { LinkedList(it) },
+            .map { it.trim().toInt().toLong() }}.let { LinkedList(it) },
         operation = Operation.parseString(m[2]),
         test = m[3].let { it.substring(it.indexAfter("Test: divisible by ")).toInt() },
         nextMonkeyIds = NextMonkeyIds(
@@ -70,7 +70,7 @@ fun playRoundV1(
             onInspection(monkey.id)
             val stressLevel = monkey.operation.invoke(worryLevel)
             val newStressLevel = stressLevel / 3
-            if (newStressLevel % monkey.test == 0) {
+            if (newStressLevel % monkey.test == 0L) {
                 list[monkey.nextMonkeyIds.trueMonkeyId].items.add(newStressLevel)
             } else {
                 list[monkey.nextMonkeyIds.falseMonkeyId].items.add(newStressLevel)
@@ -80,17 +80,17 @@ fun playRoundV1(
 }
 
 class Counter {
-    val counter = mutableMapOf<Int, Int>()
+    val counter = mutableMapOf<Int, Long>()
 
     fun onInspection(id: Int) {
-        counter[id] = counter.getOrDefault(id, 0) + 1
+        counter[id] = counter.getOrDefault(id, 0L) + 1
     }
 
     fun calculateMonkeyBusines() =
-        counter.values.sortedDescending().take(2).fold(1) { acc, entry -> acc * entry }
+        counter.values.sortedDescending().take(2).fold(1L) { acc, entry -> acc * entry }
 }
 
-fun puzzle1(input: List<String>): Int {
+fun puzzle1(input: List<String>): Long {
     val monkeysStart = parseInput(input)
     val counter = Counter()
 
@@ -104,13 +104,14 @@ fun playRoundV2(
     list: List<Monkey>,
     onInspection: (id: Int) -> Unit = { }
 ) {
+    val commonMultiplier = list.map { it.test }.fold(1L) { acc, v -> acc * v}
     list.forEach { monkey ->
         while (!monkey.items.isEmpty()) {
             val worryLevel = monkey.items.poll()
             onInspection(monkey.id)
             val stressLevel = monkey.operation.invoke(worryLevel)
-            val newStressLevel = stressLevel / 1
-            if (newStressLevel % monkey.test == 0) {
+            val newStressLevel = stressLevel % commonMultiplier
+            if (newStressLevel % monkey.test == 0L) {
                 list[monkey.nextMonkeyIds.trueMonkeyId].items.add(newStressLevel)
             } else {
                 list[monkey.nextMonkeyIds.falseMonkeyId].items.add(newStressLevel)
@@ -119,12 +120,12 @@ fun playRoundV2(
     }
 }
 
-fun puzzle2(input: List<String>): Int {
+fun puzzle2(input: List<String>): Long {
     val monkeysStart = parseInput(input)
     val counter = Counter()
 
-    repeat(20) {
-        playRoundV1(monkeysStart, counter::onInspection)
+    repeat(10000) {
+        playRoundV2(monkeysStart, counter::onInspection)
     }
     return counter.calculateMonkeyBusines()
 }

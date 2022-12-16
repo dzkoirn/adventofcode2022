@@ -8,33 +8,9 @@ data class Operation(
     val arithmeticOperation: ArithmeticOperation,
     val rightOperand: Operand
 ) {
-    fun invoke(v: Int): Int = arithmeticOperation.apply(leftOperand.invoke(v), rightOperand.invoke(v))
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as Operation
-
-        if (leftOperand != other.leftOperand) return false
-        if (arithmeticOperation != other.arithmeticOperation) return false
-        if (rightOperand != other.rightOperand) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = leftOperand.hashCode()
-        result = 31 * result + arithmeticOperation.hashCode()
-        result = 31 * result + rightOperand.hashCode()
-        return result
-    }
-
-    override fun toString(): String {
-        return "Operation(leftOperand=$leftOperand, arithmeticException=$arithmeticOperation, rightOperand=$rightOperand)"
-    }
+    fun invoke(v: Long): Long = arithmeticOperation.apply(leftOperand.invoke(v), rightOperand.invoke(v))
 
     companion object {
-
         /*
            Operation: new = old + 6
            Operation: new = old * old
@@ -43,22 +19,22 @@ data class Operation(
          */
         fun parseString(input: String): Operation {
             val (left, operator, right) = Scanner(input).tokens().skip(3).toList()
-            return return Operation(
+            return Operation(
                 leftOperand = Operand.createFromString(left),
                 arithmeticOperation = ArithmeticOperation.fromString(operator),
                 rightOperand = Operand.createFromString(right),
             )
         }
 
-        sealed interface Operand: Function1<Int, Int> {
+        sealed interface Operand: Function1<Long, Long> {
             object OldOperand: Operand {
-                override fun invoke(a: Int): Int = a
+                override fun invoke(a: Long): Long = a
             }
 
             data class ConstOperand(
-                private val constant: Int
+                private val constant: Long
             ) : Operand {
-                override fun invoke(a: Int): Int = constant
+                override fun invoke(a: Long): Long = constant
             }
 
             companion object {
@@ -66,20 +42,20 @@ data class Operation(
                     if (str == "old") {
                         OldOperand
                     } else {
-                        ConstOperand(str.toInt())
+                        ConstOperand(str.toLong())
                     }
             }
         }
 
-        enum class ArithmeticOperation : BinaryOperator<Int> {
+        enum class ArithmeticOperation : BinaryOperator<Long> {
             PLUS {
-                override fun apply(t: Int, u: Int): Int = t + u
+                override fun apply(t: Long, u: Long): Long = t + u
             }, MUL {
-                override fun apply(t: Int, u: Int): Int = t * u
+                override fun apply(t: Long, u: Long): Long = t * u
             }, MINUS {
-                override fun apply(t: Int, u: Int): Int = t - u
+                override fun apply(t: Long, u: Long): Long = t - u
             }, DIV {
-                override fun apply(t: Int, u: Int): Int = t / u
+                override fun apply(t: Long, u: Long): Long = t / u
             };
 
             companion object {
