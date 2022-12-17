@@ -33,6 +33,8 @@ tasks.test { // See 5️⃣
 }
 
 dependencies {
+    implementation("org.json:json:20220924")
+
     testImplementation(platform("org.junit:junit-bom:5.9.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     testImplementation("org.junit.jupiter:junit-jupiter-params:5.9.0")
