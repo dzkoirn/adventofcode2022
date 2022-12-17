@@ -21,6 +21,22 @@ class SolutionTest {
         assertEquals(13, result)
     }
 
+    @Test
+    fun testSorting() {
+        val input = parseInputToLists(exampleInput.lines()) + dividerPackets
+        val output = parseInputToLists(exampleOutAfterSort.lines())
+
+        val result = input.sortedWith(::compareValues)
+        assertEquals(output, result)
+    }
+
+    @Test
+    fun testPuzzle2ExampleInput() {
+        val result = puzzle2(exampleInput.lines())
+        assertEquals(140, result)
+    }
+
+
     companion object {
         val exampleInput = """
             [1,1,3,1,1]
@@ -165,5 +181,26 @@ class SolutionTest {
                     expected = false
                 ),
             )
+
+        val exampleOutAfterSort = """
+            []
+            [[]]
+            [[[]]]
+            [1,1,3,1,1]
+            [1,1,5,1,1]
+            [[1],[2,3,4]]
+            [1,[2,[3,[4,[5,6,0]]]],8,9]
+            [1,[2,[3,[4,[5,6,7]]]],8,9]
+            [[1],4]
+            [[2]]
+            [3]
+            [[4,4],4,4]
+            [[4,4],4,4,4]
+            [[6]]
+            [7,7,7]
+            [7,7,7,7]
+            [[8,7,6]]
+            [9]
+        """.trimIndent()
     }
 }
