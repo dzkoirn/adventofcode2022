@@ -9,6 +9,7 @@ fun main() {
     println(findPathAndCountSteps(input))
     println("===================")
     println("Puzzle 2")
+    println(findBetterStartAndCountSteps(input))
     println("Finish")
 }
 
@@ -64,8 +65,12 @@ tailrec fun bfs(
     target: Char,
     candidates: Set<Pair<Int, Int>> = emptySet(),
     visited: MutableSet<Pair<Int, Int>> = mutableSetOf(),
-    iteration: Int = 0
+    iteration: Int = 0,
+    previousMin: Int = -1
 ): Int {
+    if (previousMin > -1 && iteration > previousMin) {
+        return -1
+    }
     if (candidates.isEmpty()) {
         return -1
     }
@@ -107,4 +112,48 @@ fun debugPrintVisitedPlaces(
         matrix[p.second][p.first] = '*'
     }
     return matrix.joinToString(separator = "\n") { it.joinToString("") }
+}
+
+fun findBetterStartAndCountSteps(input: List<String>) : Int {
+    val matrix = input.map { it.toCharArray() }
+    println("Debug: matrix size : ${matrix.first().size}, ${matrix.size} ")
+
+    val possibleStarts = matrix[0].mapIndexed { index, c ->
+        if (c == 'S' || c == 'a') {
+            Pair(index, 0)
+        } else {
+            null
+        }
+    }.filterNotNull() +
+    matrix.last().mapIndexed { index, c ->
+        if (c == 'S' || c == 'a') {
+            Pair(index, matrix.lastIndex)
+        } else {
+            null
+        }
+    }.filterNotNull() +
+    matrix.mapIndexed { index, chars ->
+        val f = chars.first()
+        val l = chars.last()
+        mutableListOf<Pair<Int, Int>>().apply {
+            if (f == 'S' || f == 'a') {
+                add(Pair(0, index))
+            }
+            if (l == 'S' || l == 'a') {
+                add(Pair(chars.lastIndex, index))
+            }
+        }.toList()
+    }.flatten()
+
+    println("Debug: possible starts = $possibleStarts")
+
+    var minWay = -1
+    for (p in possibleStarts.toSet()) {
+        val r = bfs(matrix = matrix, target = 'E', candidates = possibleStarts.toSet(), previousMin = minWay)
+        if (r != -1) {
+            minWay = r
+        }
+    }
+
+    return minWay
 }

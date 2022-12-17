@@ -11,6 +11,12 @@ class SolutionTest {
         assertEquals(31, steps)
     }
 
+    @Test
+    fun testFindBetterStart() {
+        val steps = findBetterStartAndCountSteps(exampleInput.lines())
+        assertEquals(29, steps)
+    }
+
     companion object {
         val exampleInput = """
             Sabqponm
