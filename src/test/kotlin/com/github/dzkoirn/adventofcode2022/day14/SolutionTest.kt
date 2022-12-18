@@ -20,6 +20,13 @@ class SolutionTest {
         assertEquals(24, units)
     }
 
+    @Test
+    fun testSimulationWithFloorExampleInput() {
+        val cave = parseInput(exampleInput)
+        val units = runSimulation(cave, Point(500, 0), withFloor = true)
+        assertEquals(93, units)
+    }
+
     companion object {
         val exampleInput = """
             498,4 -> 498,6 -> 496,6
