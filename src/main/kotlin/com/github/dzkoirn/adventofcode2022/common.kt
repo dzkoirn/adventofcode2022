@@ -19,6 +19,8 @@ class PointComparator : Comparator<Point> {
 
 typealias Matrix = Array<CharArray>
 
+typealias Input = List<String>
+
 fun createMatrix(width: Int, height: Int, value: Char = ' '): Matrix {
     return Array(height) {
         CharArray(width) { value }
