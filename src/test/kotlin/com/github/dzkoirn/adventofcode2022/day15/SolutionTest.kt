@@ -62,7 +62,7 @@ class SolutionTest {
 
     @Test
     fun testFindNotCoveredInTheArea() {
-        val result = findNotCoveredIntArea(exampleInput, 20, 20)
+        val result = findNotCoveredIntArea(exampleInput, 20)
         assertEquals(Point(14, 11), result.first())
     }
 

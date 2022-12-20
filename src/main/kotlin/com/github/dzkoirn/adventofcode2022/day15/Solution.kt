@@ -5,6 +5,8 @@ import com.github.dzkoirn.adventofcode2022.Point
 import com.github.dzkoirn.adventofcode2022.readInput
 import java.time.Duration
 import kotlin.math.absoluteValue
+import kotlin.math.max
+import kotlin.math.min
 
 fun main() {
     println("Day 15. Start")
@@ -15,7 +17,14 @@ fun main() {
     val result = getCoverageOnLinev2(2000000, input)
     val end = System.nanoTime()
     println(result)
-    println("It take ${Duration.ofNanos(end - start).toSeconds()} seconds )))")
+    println("It took ${Duration.ofNanos(end - start).toSeconds()} seconds )))")
+    println("==================================")
+    println("Puzzle 2")
+    val start2 = System.nanoTime()
+    val result2 = findNotCoveredIntArea(input, 4000000)
+    val end2 = System.nanoTime()
+    println(result2.first().let { (x, y) -> x.toLong() * 4000000 + y.toLong() })
+    println("It took ${Duration.ofNanos(end2 - start2).toSeconds()} seconds )))")
     println("Finish")
 }
 
@@ -89,21 +98,11 @@ fun getCoverageOnLineSlow(
 }
 
 fun Pair<Sensor, Beacon>.calculateCoverageForLine(yLine: Int): Set<Point> {
-    return this.calculateCoverageForLineRange(yLine).map { x -> Point(x, yLine) }
+    return this.calculateCoverageRangeForLine(yLine).map { x -> Point(x, yLine) }
         .toSet()
-//    val distance = first calculateManhattanDistance second
-//    val yRange = (first.y - distance..first.y + distance)
-//    return if (yLine in yRange) {
-//        val dx = distance - (yLine - first.y).absoluteValue
-//        ((first.x - dx)..(first.x + dx)).map { x ->
-//            Point(x, yLine)
-//        }.toSet()
-//    } else {
-//        emptySet()
-//    }
 }
 
-fun Pair<Sensor, Beacon>.calculateCoverageForLineRange(yLine: Int): IntRange {
+fun Pair<Sensor, Beacon>.calculateCoverageRangeForLine(yLine: Int): IntRange {
     val distance = first calculateManhattanDistance second
     val yRange = (first.y - distance..first.y + distance)
     return if (yLine in yRange) {
@@ -132,22 +131,43 @@ fun getCoverageOnLinev2(
         .count()
 }
 
-fun mergedCoverageForARow(report: List<Pair<Sensor, Beacon>>, lineNumber: Int): List<IntRange> {
-    report.map { it.calculateCoverageForLineRange(lineNumber) }
-        .fold(mutableListOf<IntRange>()) { acc, intRange ->    }
+fun List<IntRange>.merge(): List<IntRange> {
+    return this.filterNot { it.isEmpty() }
+        .sortedBy { it.first }
+        .fold(mutableListOf<IntRange>()) { acc, intRange ->
+            if (acc.isEmpty()) {
+                acc.apply {
+                    add(intRange)
+                }
+            } else {
+                val previousRange = acc.removeLast()
+                val delta = min(previousRange.last, intRange.last) - max(previousRange.first, intRange.first)
+                if (delta >= 0) {
+                    val newRange = IntRange(min(previousRange.first, intRange.first),  max(previousRange.last, intRange.last))
+                    acc.apply {
+                        add(newRange)
+                    }
+                } else {
+                    acc.apply {
+                        add(previousRange)
+                        add(intRange)
+                    }
+                }
+            }
+    }
 }
 
-fun findNotCoveredIntArea(input: Input, maxX: Int, maxY: Int): Set<Point> {
+fun findNotCoveredIntArea(input: Input, maxY: Int): Set<Point> {
     val report = parseInput(input)
-    val occupiedPoints = report.map { (s, b) -> listOf(s, b) }
-        .flatten()
-        .toSet()
-    (0..maxY).map { line ->
-        for (intRange in report.map { pair ->
-            pair.calculateCoverageForLineRange(line)
-        }) {
-            
+//    val occupiedPoints = report.map { (s, b) -> listOf(s, b) }
+//        .flatten()
+//        .toSet()
+    val set = mutableSetOf<Point>()
+    for (line in (0..maxY)) {
+        val ranges = report.map { pair -> pair.calculateCoverageRangeForLine(line) }.merge()
+        if (ranges.size > 1) {
+            set.add(Point(ranges.first().last +1, line))
         }
     }
-    return emptySet()
+    return set
 }
