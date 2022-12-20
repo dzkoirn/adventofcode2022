@@ -5,10 +5,19 @@ import com.github.dzkoirn.adventofcode2022.Point
 import com.github.dzkoirn.adventofcode2022.PointComparator
 import com.github.dzkoirn.adventofcode2022.readInput
 import kotlin.math.absoluteValue
+import kotlin.time.Duration
+import kotlin.time.DurationUnit
+import kotlin.time.toDuration
 
 fun main() {
     println("Day 15. Start")
     val input = readInput("day_15_input")
+    println("Puzzle 1")
+    val start = System.nanoTime()
+    val result = getCoverageOnLine(2000000, input)
+    val end = System.nanoTime()
+    println("It take ${(end - start).toDuration(DurationUnit.SECONDS)} )))")
+    println(result)
     println("Finish")
 }
 
@@ -45,27 +54,38 @@ private fun stupidLineParsing(str: String): Pair<Sensor, Beacon> {
 internal infix fun Point.calculateManhattanDistance(other: Point): Int =
     (this.x - other.x).absoluteValue + (this.y - other.y).absoluteValue
 
-fun Point.calculateCoveredAreaWithDistance(distance: Int): Set<Point> {
-    return (this.x - distance .. this.x + distance).map { xx ->
-        val dy = distance - (this.x - xx).absoluteValue
-        (this.y - dy .. this.y + dy).map { yy ->
-            Point(xx, yy)
+fun Point.calculateCoveredAreaWithDistance(distance: Int): Sequence<Point> {
+    val pointX = this.x
+    val pointY = this.y
+    return sequence {
+        for (xx in (pointX - distance .. pointX + distance)) {
+            val dy = distance - (pointX - xx).absoluteValue
+            for (yy in (pointY - dy .. pointY + dy)) {
+                yield(Point(xx, yy))
+            }
         }
-    }.flatten()
-    .toSet()
+    }
 }
 
-fun modelCoverage(report: List<Pair<Sensor, Beacon>>): Set<Point> {
-    return report.map { (sensor, beacon) ->
-        val distance = sensor calculateManhattanDistance beacon
-        sensor.calculateCoveredAreaWithDistance(distance)
-    }.flatten()
-    .toSet()
+fun modelCoverage(report: List<Pair<Sensor, Beacon>>): Sequence<Point> {
+    return report.asSequence()
+        .flatMap { (sensor, beacon) ->
+            val distance = sensor calculateManhattanDistance beacon
+            sensor.calculateCoveredAreaWithDistance(distance)
+        }
 }
 
-fun getCoverageOnLine(lineNumber: Int, coveredPoints: Set<Point>, report: List<Pair<Sensor, Beacon>>): Int {
+fun getCoverageOnLine(
+    lineNumber: Int,
+    input: Input
+): Int {
+    val report = parseInput(input)
+    val coveredPoints = modelCoverage(report)
+    val occupiedPoints = report.map { (s, b) -> listOf(s, b) }
+        .flatten()
+        .toSet()
     return coveredPoints.filter { (_, y) -> y == lineNumber }
-        .also { println("Debug ${it.sortedWith(PointComparator())}") }
-        .filterNot { it in report  }
+        .filterNot { it in occupiedPoints }
+        .distinct()
         .count()
 }

@@ -15,7 +15,7 @@ class SolutionTest {
 
     @Test
     fun testModelCoverage() {
-        val result = modelCoverage(parseInput(listOf("Sensor at x=8, y=7: closest beacon is at x=2, y=10"))).sortedWith(PointComparator())
+        val result = modelCoverage(parseInput(listOf("Sensor at x=8, y=7: closest beacon is at x=2, y=10"))).toSet().sortedWith(PointComparator())
         val expected = setOf(
             Point(8, -2),
             Point(7, -1), Point(8, -1), Point(9, -1),
@@ -42,7 +42,7 @@ class SolutionTest {
 
     @Test
     fun testCoverageCount() {
-        val result = getCoverageOnLine(10, modelCoverage(parseInput(exampleInput)).also { println(it) })
+        val result = getCoverageOnLine(10, exampleInput)
         assertEquals(26, result)
     }
 
