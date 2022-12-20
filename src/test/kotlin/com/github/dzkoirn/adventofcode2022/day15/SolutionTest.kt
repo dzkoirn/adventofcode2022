@@ -60,6 +60,13 @@ class SolutionTest {
         assertEquals(26, result)
     }
 
+    @Test
+    fun testFindNotCoveredInTheArea() {
+        val result = findNotCoveredIntArea(exampleInput, 20, 20)
+        assertEquals(Point(14, 11), result.first())
+    }
+
+
     companion object {
         val exampleInput = """
             Sensor at x=2, y=18: closest beacon is at x=-2, y=15
