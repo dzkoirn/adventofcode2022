@@ -41,8 +41,22 @@ class SolutionTest {
     }
 
     @Test
-    fun testCoverageCount() {
-        val result = getCoverageOnLine(10, exampleInput)
+    fun testCoverageCountSlow() {
+        val result = getCoverageOnLineSlow(10, exampleInput)
+        assertEquals(26, result)
+    }
+
+    @Test
+    fun calculateCoverageForLine() {
+        val result =parseInput(listOf("Sensor at x=8, y=7: closest beacon is at x=2, y=10")).first()
+            .calculateCoverageForLine(10).sortedWith(PointComparator()).toSet()
+        val expected = setOf(Point(2, 10), Point(3, 10), Point(4, 10), Point(5, 10), Point(6, 10), Point(7, 10), Point(8, 10), Point(9, 10), Point(10, 10), Point(11, 10), Point(12, 10), Point(13, 10), Point(14, 10),)
+        assertEquals(expected, result)
+    }
+
+    @Test
+    fun testCoverageCountV2() {
+        val result = getCoverageOnLinev2(10, exampleInput)
         assertEquals(26, result)
     }
 
